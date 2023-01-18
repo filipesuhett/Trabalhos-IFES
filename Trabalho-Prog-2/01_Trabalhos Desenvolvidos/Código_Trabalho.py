@@ -36,7 +36,7 @@ def mergesort(m1, m2, dic):
     
     # Comparação de Nota com Ponto Extra              
     if nota_aluno1 != nota_aluno2:
-        return nota_aluno1 > nota_aluno2    
+        return nota_aluno1 > nota_aluno2   
     
     # Comparação de Nota sem Ponto Extra   
     elif sum(nota1) != sum(nota2):
