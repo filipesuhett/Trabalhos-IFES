@@ -1,8 +1,8 @@
-#------------------------------------------#
-#TRABALHO DE PROGRAMAÇÃO II                #
-#ALUNOS: FILIPE SUHETT E GIOVANNA SCALFONI #
-#PROFESSOR: HILÁRIO SEIBEL JR              #
-#------------------------------------------#
+#-------------------------------------------#
+# TRABALHO DE PROGRAMAÇÃO II                #
+# ALUNOS: FILIPE SUHETT E GIOVANNA SCALFONI #
+# PROFESSOR: HILÁRIO SEIBEL JR              #
+#-------------------------------------------#
 
 #-------------------#
 # Imports do Código #
