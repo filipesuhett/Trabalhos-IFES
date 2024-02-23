@@ -1,17 +1,26 @@
-public class Teacher extends People {
-    // Private member variable to store the wage of the teacher.
+import java.io.BufferedWriter;
+import java.io.IOException;
+
+public class Teacher extends People implements Save{
     private double wage;
 
-    // Constructor to initialize the Teacher object with provided name, CPF, and wage.
     public Teacher(String name, String cpf, double wage) {
-        // Call the constructor of the superclass (People) with provided name and CPF.
-        super(name, cpf);
-
-        // Set the wage for this teacher.
+        super(name, cpf); // Chama o construtor da superclasse (People) com o nome e CPF fornecidos.
         this.setWage(wage);
     }
 
-    // Getter and setter method for the wage of the teacher.
+    public String toString() {
+        return this.getName() + " (CPF: " + this.getCpf() + ")";
+    }
+
+    public void saveArc(BufferedWriter buff) {
+        try {
+            buff.write(this.name + ";" + this.cpf + ";" + this.wage + "\n");
+        } catch (IOException e) {
+            System.out.println("Error while saving teacher.");
+        }
+    }
+
     public double getWage() {
         return wage;
     }

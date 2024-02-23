@@ -1,27 +1,35 @@
-public class Student extends People {
-    // Private member variable to store the matriculation number.
+import java.io.BufferedWriter;
+import java.io.IOException;
+
+public class Student extends People implements Save, java.lang.Comparable<Student> {
     private String mat;
 
-    // Constructor to initialize the Student object with provided name, CPF, and matriculation number.
     public Student(String name, String cpf, String mat) {
-        // Call the constructor of the superclass (People) with provided name and CPF.
-        super(name, cpf);
-
-        // Set the matriculation number for this student.
+        super(name, cpf); // Chama o construtor da superclasse (People) com o nome e CPF fornecidos.
         this.setMat(mat);
     }
 
-    // Method to return a string representation of the student's name and matriculation number.
     public String toString() {
         return this.getName() + " (Matrícula: " + this.getMat() + ")";
     }
 
-    // Getter and setter method for matriculation number.
+    public void saveArc(BufferedWriter buff) {
+        try {
+            buff.write(this.name + ";" + this.cpf + ";" + this.mat + "\n");
+        } catch (IOException e) {
+            System.out.println("Error while saving student.");
+        }
+    }
+    
     public String getMat() {
         return mat;
     }
 
     public void setMat(String mat) {
         this.mat = mat;
+    }
+
+    public int compareTo(Student o) {
+        return 0;
     }
 }

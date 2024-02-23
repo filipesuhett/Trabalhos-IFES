@@ -1,22 +1,15 @@
-public class Exam {
-    // Protected member variables to store the name, exam date, and grade.
+public abstract class Exam {
     protected String name;
     protected Date dtExam;
     protected double grade;
 
-    // Protected constructor to initialize the Exam object with provided name, date, and grade.
     protected Exam(String name, Date dtExam, double grade) {
         this.setName(name);
         this.setDtExam(dtExam);
         this.setGrade(grade);
     }
 
-    // Method to calculate the grade for a specific student at the given index.
-    public double grade(int index){
-        return -1; // Default implementation returns -1, subclasses can override this method.
-    }
-
-    // Getter and setter methods for name, exam date, and grade.
+    public abstract double grade(int index);
 
     public String getName() {
         return name;

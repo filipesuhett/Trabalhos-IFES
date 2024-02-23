@@ -1,11 +1,14 @@
+import java.io.IOException;
+
 /**
  * Classe principal
- * @author Hilario Seibel Junior
+ * @authors Filipe Suhett, Giovanna Scalfoni, Hilario Seibel Junior
  */
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Entrada io = new Entrada();
         AcademicSys s = new AcademicSys();
+        io.readText(s);
 
         int op = io.menu1();
 
@@ -17,8 +20,10 @@ public class Main {
                 io.cadAluno(s);
             }
             if (op == 3) {
-                Classroom t = io.cadTurma(s);
-                t.median();
+                io.cadTurma(s);
+            }
+            if (op == 4) {
+                io.medianAll(s);
             }
 
             op = io.menu1();
