@@ -1,15 +1,14 @@
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.sql.SQLOutput;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
  * Classe com as rotinas de entrada e saída do projeto
- * @author Filipe SUhett, Giovanna Scalfoni e Hilario Seibel Junior
+ * @authors Filipe Suhett, Giovanna Scalfoni e Hilario Seibel Junior
  */
 public class Entrada {
     public Scanner input;
-
-
     /**
      * Construtor da classe InputOutput
      * Se houver um arquivo input.txt, define que o Scanner vai ler deste arquivo.
@@ -34,10 +33,13 @@ public class Entrada {
     private String lerLinha(String msg) {
         // Imprime uma mensagem ao usuário, lê uma e retorna esta linha
         System.out.print(msg);
-        String linha = this.input.nextLine();
+        String linha = "";
+        linha = this.input.nextLine();
 
         // Ignora linhas começando com #, que vão indicar comentários no arquivo de entrada:
-        while (linha.charAt(0) == '#') linha = this.input.nextLine();
+        while (linha.charAt(0) == '#')
+            linha = this.input.nextLine();
+
         return linha;
     }
 
@@ -46,10 +48,12 @@ public class Entrada {
      * @param msg: Mensagem que será exibida ao usuário
      * @return O número digitado pelo usuário convertido para int
      */
-    private int lerInteiro(String msg) {
+    private int lerInteiro(String msg) throws NumberFormatException, StringIndexOutOfBoundsException {
         // Imprime uma mensagem ao usuário, lê uma linha contendo um inteiro e retorna este inteiro
         String linha = this.lerLinha(msg);
-        return Integer.parseInt(linha);
+        int numero = Integer.parseInt(linha);
+
+        return numero;
     }
 
     /**
@@ -57,10 +61,12 @@ public class Entrada {
      * @param msg: Mensagem que será exibida ao usuário
      * @return O número digitado pelo usuário convertido para double
      */
-    private double lerDouble(String msg) {
+    private double lerDouble(String msg) throws NumberFormatException, StringIndexOutOfBoundsException {
         // Imprime uma mensagem ao usuário, lê uma linha contendo um double e retorna este double
         String linha = this.lerLinha(msg);
-        return Double.parseDouble(linha);
+        double numero = Double.parseDouble(linha);
+
+        return numero;
     }
 
     /**
@@ -70,18 +76,26 @@ public class Entrada {
     public int menu1() {
         // Imprime o menu principal, lê a opção escolhida pelo usuário e retorna a opção selecionada.
 
+        int op = -1;
+
         String msg = "*********************\n" +
                 "Escolha uma opção:\n" +
                 "1) Cadastrar professor:\n" +
                 "2) Cadastrar aluno:\n" +
                 "3) Cadastrar turma:\n" +
+                "4) Visualizar notas de todas as turmas:\n" +
                 "0) Sair\n";
 
-        int op = this.lerInteiro(msg);
-
-        while (op < 0 || op > 3) {
-            System.out.println("Opção inválida. Tente novamente: ");
+        try {
             op = this.lerInteiro(msg);
+
+            while (op < 0 || op > 4) {
+                System.out.println("Opção inválida. Tente novamente: ");
+                op = this.lerInteiro(msg);
+            }
+        }
+        catch (StringIndexOutOfBoundsException | NumberFormatException e) {
+            System.out.println("Erro: Entrada inválida. Tente novamente: ");
         }
 
         return op;
@@ -93,19 +107,33 @@ public class Entrada {
      * Lê os dados de um novo Teacher e cadastra-o no sistema.
      * @param s: Um objeto da classe AcademicSys
      */
-    public void cadProf(AcademicSys s) {
+    public void cadProf(AcademicSys s) throws IOException {
         s.listTeacher();
 
-        String nome = this.lerLinha("Digite o nome do professor: ");
-        String cpf = this.lerLinha("Digite o cpf do professor: ");
-        double salario = this.lerDouble("Digite o salário do professor: R$");
+        String nome = "";
+        String cpf = "";
+        double salario = 0.0;
 
-        if (s.findTeacher(cpf) == null) { // Garantindo que o não CPF esteja duplicado.
-            Teacher p = new Teacher(nome, cpf, salario);
-            s.newTeacher(p);
+        try {
+            nome = this.lerLinha("Digite o nome do professor: ");
+            cpf = this.lerLinha("Digite o cpf do professor: ");
+            salario = this.lerDouble("Digite o salário do professor: R$");
+
+            FileWriter f = new FileWriter("teachers.txt", true);
+            BufferedWriter buff = new BufferedWriter(f);
+
+            if (s.findTeacher(cpf) == null) { // Garantindo que o não CPF esteja duplicado.
+                Teacher p = new Teacher(nome, cpf, salario);
+                p.saveArc(buff);
+                buff.close();
+                s.newTeacher(p);
+            }
+            else {
+                System.out.println("Erro: CPF duplicado. Professor não adicionado.");
+            }
         }
-        else {
-            System.out.println("Erro: CPF duplicado. Professor não adicionado.");
+        catch (StringIndexOutOfBoundsException | NumberFormatException | NoSuchElementException e) {
+            System.out.println("Erro: Entrada inválida. Professor não adicionado.");
         }
     }
 
@@ -113,19 +141,34 @@ public class Entrada {
      * Lê os dados de um novo Student e cadastra-o no sistema.
      * @param s: Um objeto da classe AcademicSys
      */
-    public void cadAluno(AcademicSys s) {
+    public void cadAluno(AcademicSys s) throws IOException {
         s.listStudent();
 
-        String nome = this.lerLinha("Digite o nome do aluno: ");
-        String cpf = this.lerLinha("Digite o cpf do aluno: ");
-        String mat = this.lerLinha("Digite a matrícula do aluno: ");
+        String nome = "";
+        String cpf = "";
+        String mat = "";
 
-        if (s.findStudent(mat) == null) { // Garantindo que a matrícula não esteja duplicada.
-            Student a = new Student(nome, cpf, mat);
-            s.newStudents(a);
+        try {
+            nome = this.lerLinha("Digite o nome do aluno: ");
+            cpf = this.lerLinha("Digite o cpf do aluno: ");
+            mat = this.lerLinha("Digite a matrícula do aluno: ");
+
+            FileWriter f = new FileWriter("students.txt", true);
+            BufferedWriter buff = new BufferedWriter(f);
+
+            if (s.findStudent(mat) == null) {
+                Student a = new Student(nome, cpf, mat);
+                a.saveArc(buff);
+                buff.close();
+                s.newStudents(a);
+            }
+            else {
+                System.out.println("Erro: Matrícula duplicada. Aluno não adicionado.");
+            }
+
         }
-        else {
-            System.out.println("Erro: Matrícula duplicada. Aluno não adicionado.");
+        catch (StringIndexOutOfBoundsException | NumberFormatException e) {
+            System.out.println("Erro: Entrada inválida. Aluno não adicionado.");
         }
     }
 
@@ -157,6 +200,13 @@ public class Entrada {
      */
     private Student[] lerAluno(AcademicSys s) {
         int nStudents = this.lerInteiro("Digite a quantidade de alunos na disciplina: ");
+
+        if (nStudents <= 0 || nStudents > s.lengthStudents()) {
+            Student[] Students = new Student[0];
+            System.out.println("Erro: Tamanho da Turma é superior ao numero de alunos cadastrados ou o Tamanho da Turma é 0.");
+            return Students;
+        }
+
         Student[] Students = new Student[nStudents];
 
         for(int i=0; i<nStudents; i++) {
@@ -168,6 +218,14 @@ public class Entrada {
             while (a == null) {
                 mat = this.lerLinha("Matrícula inválida. Digite outra: ");
                 a = s.findStudent(mat);
+            }
+
+            for(int j=0; j<i; j++) {
+                if (Students[j].getMat().equals(mat)) {
+                    Student[] Students1 = new Student[0];
+                    System.out.println("Erro: Matrícula duplicada. Aluno não adicionado.");
+                    return Students1;
+                }
             }
 
             Students[i] = a;
@@ -208,6 +266,7 @@ public class Entrada {
         Date aplic = new Date(dia, mes, ano);
 
         double valor = this.lerDouble("Digite o valor máximo desta avaliação: ");
+
         int nQuestoes = this.lerInteiro("Digite o número de questões: ");
 
         StudentTest[] notas = new StudentTest[Students.length];
@@ -270,6 +329,13 @@ public class Entrada {
      */
     private Exam[] lerAvaliacoes(AcademicSys s, Student[] Students) {
         int nAvaliacoes = this.lerInteiro("Digite a quantidade de avaliações na disciplina: ");
+
+        if (nAvaliacoes <= 0) {
+            Exam[] avs = new Exam[0];
+            System.out.println("Erro: Número de avaliações inválido. Tente novamente: ");
+            return avs;
+        }
+
         Exam[] avs = new Exam[nAvaliacoes];
 
         for (int i=0; i<nAvaliacoes; i++) {
@@ -291,17 +357,83 @@ public class Entrada {
      * @param s: Um objeto da classe AcademicSys
      * @return Um novo objeto da classe Classroom com todos os dados desta Classroom.
      */
-    public Classroom cadTurma(AcademicSys s) {
-        String disciplina = this.lerLinha("Digite o nome da disciplina: ");
-        int ano = this.lerInteiro("Digite o ano da disciplina: ");
-        int sem = this.lerInteiro("Digite o semestre da disciplina: ");
+    public void cadTurma(AcademicSys s) {
+        if (s.lengthStudents() == 0) {
+            System.out.println("Erro: Não há alunos cadastrados. Turma não adicionada.");
+            return;
+        }
 
-        Teacher p = this.lerProf(s);
-        Student[] Students = this.lerAluno(s);
-        Exam[] avs = this.lerAvaliacoes(s, Students);
+        if (s.lengthTeachers() == 0) {
+            System.out.println("Erro: Não há professores cadastrados. Turma não adicionada.");
+            return;
+        }
 
-        return new Classroom(disciplina, ano, sem, p, Students, avs);
+        try {
+            String disciplina = this.lerLinha("Digite o nome da disciplina: ");
 
+            int ano = this.lerInteiro("Digite o ano da disciplina: ");
+            int sem = this.lerInteiro("Digite o semestre da disciplina: ");
+
+            Teacher p = this.lerProf(s);
+            Student[] Students = this.lerAluno(s);
+
+            if (Students.length == 0) {
+                return;
+            }
+
+            Exam[] avs = this.lerAvaliacoes(s, Students);
+
+            if (avs.length == 0) {
+                return;
+            }
+
+            s.newClassroom(new Classroom(disciplina, ano, sem, p, Students, avs));
+        }
+        catch (StringIndexOutOfBoundsException | NumberFormatException | NoSuchElementException e) {
+            System.out.println("Erro: Entrada inválida. Turma não adicionada.");
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println("Erro: Entrada inválida. Turma não adicionada.");
+        }
     }
 
+    public void medianAll(AcademicSys s) {
+        s.listClassroom();
+    }
+
+    public void readText(AcademicSys s) {
+        try {
+            FileReader f = new FileReader("students.txt");
+            BufferedReader buff = new BufferedReader(f);
+
+            while (true) {
+                if (!buff.ready()) break;
+                String line = buff.readLine();
+                String[] data = line.split(";");
+                s.newStudents(new Student(data[0], data[1], data[2]));
+            }
+
+            buff.close();
+        } 
+        catch (IOException e) {
+            System.out.println("Erro: Arquivo não encontrado.");
+        }
+        
+        try {
+            FileReader f = new FileReader("teachers.txt");
+            BufferedReader buff = new BufferedReader(f);
+
+            while (true) {
+                if (!buff.ready()) break;
+                String line = buff.readLine();
+                String[] data = line.split(";");
+                s.newTeacher(new Teacher(data[0], data[1], Double.parseDouble(data[2])));
+            }
+
+            buff.close();
+        } 
+        catch (IOException e) {
+            System.out.println("Erro: Arquivo não encontrado.");
+        }
+    }
 }

@@ -1,24 +1,19 @@
 public class Date {
-    // Private member variables to store the day, month, and year.
     private int day;
     private int month;
     private int year;
 
-    // Constructor to initialize the Date object with provided day, month, and year.
     public Date(int day, int month, int year) {
         this.setDay(day);
         this.setMonth(month);
         this.setYear(year);
     }
 
-    // Method to check if the current date is posterior (later) than the provided date.
     public boolean posterior(Date date) {
-        // Calculate the difference in years, months, and days.
         int age = date.getYear() - this.getYear();
         int month = date.getMonth() - this.getMonth();
         int day = date.getDay() - this.getDay();
 
-        // Adjust the age based on months and days.
         if (month == 0) {
             if (day < 0) {
                 age -= 1;
@@ -27,21 +22,17 @@ public class Date {
             age -= 1;
         }
 
-        // If age is non-negative, the date is not posterior.
-        if (age >= 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return age < 0;
     }
-
-    // Getter and setter methods for day, month, and year.
 
     public int getDay() {
         return day;
     }
 
     public void setDay(int day) {
+        if (day < 1 || day > 31) {
+            throw new IllegalArgumentException("Dia inválido");
+        }
         this.day = day;
     }
 
@@ -50,6 +41,9 @@ public class Date {
     }
 
     public void setMonth(int month) {
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("Mês inválido");
+        }
         this.month = month;
     }
 
@@ -58,6 +52,9 @@ public class Date {
     }
 
     public void setYear(int year) {
+        if (year < 1900) {
+            throw new IllegalArgumentException("Ano inválido");
+        }
         this.year = year;
     }
 }

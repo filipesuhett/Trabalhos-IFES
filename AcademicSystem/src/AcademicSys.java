@@ -1,107 +1,185 @@
-public class AcademicSys{
+import java.util.ArrayList;
+import java.util.List;
 
-    // Private member variables to store the number of teachers, number of students,
-    // an array of teachers, and an array of students.
-    private int numTeachers;
-    private int numStudents;
-    private Teacher[] teachers;
-    private Student[] students;
+public class AcademicSys implements Comparable<Classroom>, java.lang.Comparable<Classroom> {
+    private List<Teacher> teachers;
+    private List<Student> students;
+    private List<Classroom> classrooms;
 
-    // Constructor initializes the member variables and creates arrays with fixed sizes.
     public AcademicSys() {
-        this.numTeachers = 0; // Initialize the number of teachers to 0.
-        this.numTeachers = 0; // This looks like a typo, it should probably be numStudents.
-        this.teachers = new Teacher[100]; // Create an array to hold up to 100 teachers.
-        this.students = new Student[1000]; // Create an array to hold up to 1000 students.
+        this.setTeachers(new ArrayList<>());
+        this.setStudents(new ArrayList<>());
+        this.setClassrooms(new ArrayList<>());
     }
 
-    // Method to add a new teacher to the system.
-    public void newTeacher(Teacher t){
-        this.getTeachers()[this.getNumTeachers()] = t; // Add the teacher to the array.
-        this.setNumTeachers(this.getNumTeachers()+1); // Increment the number of teachers.
+    public void newTeacher(Teacher t) {
+        this.teachers.add(t);
     }
 
-    // Method to add a new student to the system.
-    public void newStudents(Student s){
-        this.getStudents()[this.getNumStudents()] = s; // Add the student to the array.
-        this.setNumStudents(this.getNumStudents()+1); // Increment the number of students.
+    public void newStudents(Student s) {
+        this.students.add(s);
     }
 
-    // Method to find a teacher by their CPF (presumably an identification number).
-    public Teacher findTeacher(String cpf){
-        Teacher[] teachers = this.getTeachers(); // Get the array of teachers.
-        for (int i = 0; i < this.getNumTeachers(); i++){ // Loop through the teachers.
-            String TeacherCPF = teachers[i].getCpf(); // Get the CPF of the current teacher.
-            if (TeacherCPF.equals(cpf)){ // If it matches the input CPF...
-                return teachers[i]; // Return this teacher.
+    public void newClassroom(Classroom c) {
+        this.classrooms.add(c);
+    }
+
+    public Teacher findTeacher(String cpf) {
+        List<Teacher> teachers = this.getTeachers();
+        for (Teacher teacher : teachers) {
+            if (teacher.getCpf().equals(cpf)) {
+                return teacher;
             }
         }
-        return null; // If no match is found, return null.
+        return null;
     }
 
-    // Method to find a student by their matriculation number.
-    public Student findStudent(String mat){
-        Student[] students = this.getStudents(); // Get the array of students.
-        for (int i = 0; i < this.getNumStudents(); i++){ // Loop through the students.
-            String StdMat = students[i].getMat(); // Get the matriculation number of the current student.
-            if (StdMat.equals(mat)){ // If it matches the input matriculation number...
-                return students[i]; // Return this student.
+    public Student findStudent(String mat) {
+        List<Student> students = this.getStudents();
+        for (Student student : students) {
+            if (student.getMat().equals(mat)) {
+                return student;
             }
         }
-        return null; // If no match is found, return null.
+        return null;
+    }
+
+    public Classroom findClassroom(String name) {
+        List<Classroom> classrooms = this.getClassrooms();
+        for (Classroom classroom : classrooms) {
+            if (classroom.getName().equals(name)) {
+                return classroom;
+            }
+        }
+        return null;
     }
 
     // Method to list all teachers in the system.
     public void listTeacher(){
-        Teacher[] teachers = this.getTeachers(); // Get the array of teachers.
+        List<Teacher> teachers = this.getTeachers(); // Get the array of teachers.
         System.out.println("Professores Cadastrados: ");
-        for (int i = 0; i < this.getNumTeachers(); i++){ // Loop through the teachers.
+        for (int i = 0; i < teachers.size(); i++){ // Loop through the teachers.
             System.out.print("* "); // Print an asterisk.
-            System.out.println(teachers[i]); // Print the details of the teacher.
+            System.out.println(teachers.get(i)); // Print the details of the teacher.
         }
     }
 
     // Method to list all students in the system.
     public void listStudent(){
-        Student[] students = this.getStudents(); // Get the array of students.
+        List<Student> students = this.getStudents();
         System.out.println("Alunos Cadastrados: ");
-        for (int i = 0; i < this.getNumStudents(); i++){ // Loop through the students.
+        for (int i = 0; i < students.size(); i++){ // Loop through the students.
             System.out.print("* "); // Print an asterisk.
-            System.out.println(students[i]); // Print the details of the student.
+            System.out.println(students.get(i)); // Print the details of the student.
         }
     }
 
-    // Getters and setters for various member variables.
-
-    public int getNumTeachers() {
-        return numTeachers;
+    // Method to list all classrooms in the system.
+    public void listClassroom(){
+        List<Classroom> classrooms = this.getClassrooms();
+        ord(classrooms);
+        System.out.println("Turmas Cadastradas: ");
+        for (int i = 0; i < classrooms.size(); i++){ // Loop through the classrooms.
+            System.out.println("------------------------------------------------------------");
+            classrooms.get(i).median();// Print the details of the classroom.
+        }
     }
 
-    public void setNumTeachers(int numTeachers) {
-        this.numTeachers = numTeachers;
+    public int compareTo(Classroom first ,Classroom other) {
+        int yearComparison = Integer.compare(first.getYear(), other.getYear());
+        if (yearComparison != 0) {
+            return yearComparison;
+        }
+    
+        int semesterComparison = Integer.compare(first.getPeriod(), other.getPeriod());
+        if (semesterComparison != 0) {
+            return semesterComparison;
+        }
+    
+        int nameComparison = first.getName().compareTo(other.getName());
+        if (nameComparison != 0) {
+            return nameComparison;
+        }
+
+        if (first.getTeacher().cpf.equals(other.getTeacher().cpf)) {
+            return 0;
+        }
+
+        return 1;
+    }
+    
+    public void ord(List<Classroom> list) {
+        mergeSort(list);
     }
 
-    public int getNumStudents() {
-        return numStudents;
+    public void mergeSort(List<Classroom> list) {
+        if (list.size() <= 1) {
+            return;
+        }
+
+        int mid = list.size() / 2;
+        List<Classroom> left = new ArrayList<>(list.subList(0, mid));
+        List<Classroom> right = new ArrayList<>(list.subList(mid, list.size()));
+
+        mergeSort(left);
+        mergeSort(right);
+
+        merge(list, left, right);
     }
 
-    public void setNumStudents(int numStudents) {
-        this.numStudents = numStudents;
+    public void merge(List<Classroom> list, List<Classroom> left, List<Classroom> right) {
+        int i = 0, j = 0, k = 0;
+
+        while (i < left.size() && j < right.size()) {
+            if (compareTo(right.get(j), left.get(i)) == 1) {
+                list.set(k++, left.get(i++));
+            } else {
+                list.set(k++, right.get(j++));
+            }
+        }
+
+        while (i < left.size()) {
+            list.set(k++, left.get(i++));
+        }
+
+        while (j < right.size()) {
+            list.set(k++, right.get(j++));
+        }
     }
 
-    public Teacher[] getTeachers() {
+    public int lengthStudents(){
+        return this.getStudents().size();
+    }
+
+    public int lengthTeachers(){
+        return this.getTeachers().size();
+    }
+
+    public List<Teacher> getTeachers() {
         return teachers;
     }
 
-    public void setTeachers(Teacher[] teachers) {
+    public void setTeachers(List<Teacher> teachers) {
         this.teachers = teachers;
     }
 
-    public Student[] getStudents() {
+    public List<Student> getStudents() {
         return students;
     }
 
-    public void setStudents(Student[] students) {
+    public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public List<Classroom> getClassrooms() {
+        return classrooms;
+    }
+
+    public void setClassrooms(List<Classroom> classrooms) {
+        this.classrooms = classrooms;
+    }
+
+    public int compareTo(Classroom o) {
+        return 0;
     }
 }

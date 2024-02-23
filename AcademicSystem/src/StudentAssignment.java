@@ -1,11 +1,9 @@
 public class StudentAssignment {
-    // Private member variables to store the student, assignment grade, assignment date, and runtime.
     private Student student;
     private double gradeAssignment;
     private Date dtAssignment;
     private int runtime;
 
-    // Constructor to initialize the StudentAssignment object with provided student, grade, date, and runtime.
     public StudentAssignment(Student student, double gradeAssignment, Date dtAssignment, int runtime) {
         this.setStudent(student);
         this.setGradeAssignment(gradeAssignment);
@@ -13,7 +11,6 @@ public class StudentAssignment {
         this.setRuntime(runtime);
     }
 
-    // Method to calculate the total grade for the assignment based on various conditions.
     public double totalGrade(Date deadline, int runtimeExpected, double grade) {
         double gradeAssignment = this.getGradeAssignment();
 
@@ -25,8 +22,6 @@ public class StudentAssignment {
 
         return gradeAssignment;
     }
-
-    // Getter and setter methods for student, assignment date, runtime, and grade.
 
     public Student getStudent() {
         return student;
